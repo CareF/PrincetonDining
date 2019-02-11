@@ -108,9 +108,9 @@ def GetInterest(hallMenu, interestList):
                     if fuzz.partial_ratio(items.lower(), interest.lower()) > 85:
                         matchRes.append(meal)
                         break
-                if matchRes[-1] == meal:
+                if matchRes and matchRes[-1] == meal:
                     break
-            if matchRes[-1] == meal:
+            if matchRes and matchRes[-1] == meal:
                 break
     return matchRes
 
