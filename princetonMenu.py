@@ -3,6 +3,7 @@
 from html.parser import HTMLParser
 import urllib.request
 import urllib.parse
+from fuzzywuzzy import fuzz
 import re
 baseURL = r"https://menus.princeton.edu/dining/_Foodpro/online-menu/"
 detailURL = baseURL + r"menuDetails.asp?locationNum=%s"
@@ -95,10 +96,30 @@ def AllPUDining():
 
     return totalMenu
 
+def GetInterest(hallMenu, interestList):
+    if isinstance(interestList, str):
+        interestList = [interestList]
+    matchRes = []
+    for meal in hallMenu:
+        for group in hallMenu[meal]:
+            for items in hallMenu[meal][group]:
+                for interest in interestList:
+                    print("compare", items, interest, fuzz.partial_ratio(items.lower(), interest.lower()))
+                    if fuzz.partial_ratio(items.lower(), interest.lower()) > 85:
+                        matchRes.append(meal)
+                        break
+                if matchRes[-1] == meal:
+                    break
+            if matchRes[-1] == meal:
+                break
+    return matchRes
+
 
 if __name__ == '__main__':
     import pprint
     pp = pprint.PrettyPrinter(indent=2, width=200, compact=True)
-    pp.pprint(AllPUDining())
+    totalMenu = AllPUDining()
+    pp.pprint(totalMenu)
+    print(GetInterest(totalMenu["EQuad Cafe"], "lobster"))
 
 # vim: ts=4 sw=4 sts=4 expandtab
