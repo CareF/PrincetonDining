@@ -16,7 +16,7 @@ def getDiningHall():
     PUDining = urllib.request.urlopen(baseURL)
     diningDict = {}
     for num, loc in pattern.findall(PUDining.read().decode()):
-        diningDict[num] = urllib.parse.unquote_plus(loc)
+        diningDict[num] = urllib.parse.unquote_plus(loc).strip()
     return diningDict
 
 
@@ -88,7 +88,7 @@ def AllPUDining():
 
     for num, loc in getDiningHall().items():
         url = detailURL % num
-        print(url)
+        # print(url, loc)
         menu = urllib.request.urlopen(url)
         menuparser = MenuParser()
         menuparser.feed(menu.read().decode("ISO-8859-1"))
@@ -104,7 +104,7 @@ def GetInterest(hallMenu, interestList):
         for group in hallMenu[meal]:
             for items in hallMenu[meal][group]:
                 for interest in interestList:
-                    print("compare", items, interest, fuzz.partial_ratio(items.lower(), interest.lower()))
+                    # print("compare", items, interest, fuzz.partial_ratio(items.lower(), interest.lower()))
                     if fuzz.partial_ratio(items.lower(), interest.lower()) > 85:
                         matchRes.append(meal)
                         break
